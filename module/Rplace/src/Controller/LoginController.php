@@ -11,21 +11,16 @@ use Zend\Crypt\Password\Bcrypt;
 
 class LoginController extends AbstractRestfulController
 {
-	private $table;
+	private $loginTable;
 
 	public function __construct(LoginTable $table)
 	{
-		$this->table = $table;
+		$this->loginTable = $table;
 	}
 	
-	public function get($id)
-   	{	
-
-	}
-
 	public function create($userInfo)										//Login
 	{
-			$row = $this->table->getRow($userInfo['id']);
+			$row = $this->loginTable->getRow($userInfo['emp_id']);
 		   
 	        if (!$row) {
 	            return new JsonModel(array(
@@ -34,7 +29,7 @@ class LoginController extends AbstractRestfulController
 			}
 
 			$bcrypt = new Bcrypt();
-			if (password_verify($userInfo['password'], $row->pin)) {
+			if (password_verify($userInfo['pin'], $row->pin)) {
 				return new JsonModel(array(
 					 "data" => "Success"
 				));
@@ -44,42 +39,13 @@ class LoginController extends AbstractRestfulController
 			));
 	 }
 
-
-	
-    public function registerAction()
-    {
-        $name = $this->params()->fromPost('name', "DUMMY");
-        $email = $this->params()->fromPost('email', "DUMMY");
-        $phone = $this->params()->fromPost('phone', "DUMMY");
-        $password = $this->params()->fromPost('password', "DUMMY");
-
-		$row = $this->table->getRow($phone);
-	    if ($row) {
-	            return new JsonModel(array(
-					 "data" => "Phone"
-				));
-		}
-
-		$row = $this->table->getRowByEmail($email);
-
-	    if ($row) {
-	            return new JsonModel(array(
-					 "data" => "Email"
-				));
-		}
-		
-		$this->table->register($name,$email,$phone,$password);
+	public function replaceList($updateInfo)			//Update Password
+	{
+		$this->loginTable->updateUserInfo($updateInfo);
 
 		return new JsonModel(array(
-				"data" => "Added"
+				"data" => "Updated"
 		));
 	}
 
-	public function replaceList($todo)
-	{
-	}
-
-	public function delete($task)
-	{
-	}
 }

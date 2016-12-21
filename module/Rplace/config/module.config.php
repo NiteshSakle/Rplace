@@ -22,9 +22,10 @@ return [
             'product' => [
                 'type'    => segment::class,
                  'options' =>[
-                    'route'    => '/product[/:id]',
+                    'route'    => '/product[/:action][/:id]',
 			        'constraints' => [
-                        'id'     => '[a-zA-Z0-9_.*-@]*',
+                        'action' => 'generateBill',
+						'id'	=> '[0-9a-zA-Z]*'	
 					 ],
                     'defaults' => [
                            'controller' => 'Rplace\Controller\ProductController',

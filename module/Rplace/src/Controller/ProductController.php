@@ -22,18 +22,31 @@ class ProductController extends AbstractRestfulController
 	public function getList()
 	{
 	}
-	public function get($id)
+	public function generateBillAction()
    	{	
-		echo "Get With Id";
+		$tot = 0;
+
+		$empId = $this->params()->fromPost('id',0);
+
+		$user = $this->productTable->getRow($empId);
+		$userId = $user->id;
+
+		$results = $this->productTable->getAmount($userId);
+		
+		foreach($results as $item)
+		{
+			$tot += $item->price; 
+		}
+		echo $tot;
 		exit();
 	}
 
-	public function create($userInfo)										//Adding UserPurchase
+	public function create($purchaseInfo)										//Adding UserPurchase
 	{
-		$product = $this->productTable->getProductId($userInfo['barcode']);
+		$product = $this->productTable->getProductId($purchaseInfo['barcode']);
 		$productId = $product->id;
 
-		$user = $this->productTable->getRow($userInfo['emp_id']);
+		$user = $this->productTable->getRow($purchaseInfo['emp_id']);
 		$userId = $user->id;
 
 		$this->productTable->addPurchase($productId,$userId);
@@ -41,13 +54,5 @@ class ProductController extends AbstractRestfulController
         return new JsonModel(array(
 			 "data" => "Added"
 		));
-	}
-
-	public function replaceList($todo)
-	{
-	}
-
-	public function delete($task)
-	{
 	}
 }

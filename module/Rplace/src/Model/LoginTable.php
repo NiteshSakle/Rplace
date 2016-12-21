@@ -24,32 +24,17 @@ class LoginTable
 		else
 			return $row;        
     }
-
-
     
-    public function register($name,$email,$phone,$password)
-    {
-        $bcrypt = new Bcrypt();
-        $cpwd = password_hash($password, PASSWORD_BCRYPT);
-        $data = [
-           'password' => $cpwd,
-           'email'  => $email,
-		   'name'   =>$name,
-		   'phone' => $phone,
-        ];
-        
-       $this->userTableGateway->insert($data);
-    }
-
-	public function getRowByEmail($email)
+	public function updateUserInfo($info)
 	{
-        $rowset = $this->userTableGateway->select(array('email' => $email));
-        $row = $rowset->current();
-		if(!$row) {
-			return null;
-		}
-		else
-			return $row;        
-
+		 $bcrypt = new Bcrypt();
+         $cpwd = password_hash($info['pin'], PASSWORD_BCRYPT);
+		 
+		 $data = [
+			'pin' => $cpwd
+        ];
+        $this->userTableGateway->update($data,['employee_id' => $info['emp_id']]);
+		
+		return;
 	}
 }

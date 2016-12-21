@@ -4,6 +4,7 @@ namespace Rplace\Model;
 
 use Zend\Db\TableGateway\TableGateway;
 use Zend\Crypt\Password\Bcrypt;
+use Zend\Db\Sql\Select;
 
 class ProductTable
 {
@@ -50,5 +51,18 @@ class ProductTable
         $this->userBuyTableGateway->insert($data);
 		return;
 	}
+
+	public function getAmount($empId)
+	{
+        $select = new Select();
+        $select->from(array('p' => $this->productTableGateway->getTable()))
+                ->join(array('ub' => $this->userBuyTableGateway->getTable()), 'ub.product_id= p.id')
+                ->where(array('ub.user_id' => $empId));
+
+        $resultSet = $this->productTableGateway->selectWith($select);
+
+		return $resultSet;
+	}
+
   
 }
