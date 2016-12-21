@@ -43,7 +43,7 @@ class ProductTable
 			return $row;        
 	}
 
-	public function addPurchase($pid,$uid)
+	public function addPurchase($pid,$uid)				//Adding User  Transacation
 	{
         $data = [
             'product_id' => $pid,
@@ -68,7 +68,7 @@ class ProductTable
 	
 	}
 
-	public function getDeposit($empId)
+	public function getDeposit($empId)				
 	{
 		$select = new Select();
         $select->from(array('p' => $this->userTableGateway->getTable()))
@@ -81,7 +81,7 @@ class ProductTable
 
 	}
 
-	public function deposit($empId,$amount)
+	public function deposit($empId,$amount)			//User Deposit Money
 	{
 		$data = [
             'user_id' => $empId,
@@ -93,7 +93,7 @@ class ProductTable
 
 	}
 
-	public function addProduct($barcode,$name,$price)
+	public function addProduct($barcode,$name,$price)		//New Product Add
 	{
 		$data = [
             'name' => $name,
