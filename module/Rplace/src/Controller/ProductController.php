@@ -45,6 +45,7 @@ class ProductController extends AbstractRestfulController
 	public function create($purchaseInfo)										//Adding UserPurchase
 	{
 		$product = $this->productTable->getProductId($purchaseInfo['barcode']);
+
 		$productId = $product->id;
 
 		$user = $this->productTable->getRow($purchaseInfo['emp_id']);
@@ -53,7 +54,8 @@ class ProductController extends AbstractRestfulController
 		$this->productTable->addPurchase($productId,$userId);
 
         return new JsonModel(array(
-			 "data" => "Added"
+			 "name" => $product->name,
+			 "price" => $product->price
 		));
 	}
 
