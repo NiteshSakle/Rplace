@@ -21,7 +21,6 @@ class LoginController extends AbstractRestfulController
 	public function create($userInfo)										//Login
 	{
 			$row = $this->loginTable->getRow($userInfo['emp_id']);
-		   
 	        if (!$row) {
 	            return new JsonModel(array(
 					 "data" => "No User"
@@ -31,7 +30,8 @@ class LoginController extends AbstractRestfulController
 			$bcrypt = new Bcrypt();
 			if (password_verify($userInfo['pin'], $row->pin)) {
 				return new JsonModel(array(
-					 "data" => "Success"
+					 "data" => "Success",
+					 "name" => $row->name
 				));
 			}
 			return new JsonModel(array(

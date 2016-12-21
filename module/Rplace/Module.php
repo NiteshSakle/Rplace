@@ -35,8 +35,9 @@ class Module implements ConfigProviderInterface
 				Model\ProductTable::class => function($container) {
 					$productTableGateway = $container->get(Model\ProductTableGateway::class);
 					$userBuyTableGateway = $container->get(Model\userBuyTableGateway::class);
+					$userDepositTableGateway = $container->get(Model\userDepositTableGateway::class);
 					$tableGateway = $container->get(Model\userTableGateway::class);
-					$table = new ProductTable($tableGateway,$productTableGateway,$userBuyTableGateway);
+					$table = new ProductTable($tableGateway,$productTableGateway,$userBuyTableGateway,$userDepositTableGateway);
 					return $table;
 				},
 				Model\ProductTableGateway::class => function ($container) {
@@ -48,6 +49,11 @@ class Module implements ConfigProviderInterface
 					$dbAdapter = $container->get(AdapterInterface::class);
 					$resultSetPrototype = new ResultSet();
 					return new TableGateway('user_buy', $dbAdapter, null, $resultSetPrototype);
+				},
+				Model\userDepositTableGateway::class => function ($container) {
+					$dbAdapter = $container->get(AdapterInterface::class);
+					$resultSetPrototype = new ResultSet();
+					return new TableGateway('user_deposit', $dbAdapter, null, $resultSetPrototype);
 				},
 
 
