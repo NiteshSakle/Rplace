@@ -24,23 +24,23 @@ class ProductController extends AbstractRestfulController
 	}
 	public function get($id)
    	{	
-		echo "Ohho";
+		echo "Get With Id";
 		exit();
 	}
 
-	public function create($userInfo)										//Login
+	public function create($userInfo)										//Adding UserPurchase
 	{
+		$product = $this->productTable->getProductId($userInfo['barcode']);
+		$productId = $product->id;
 
-		echo "cool";
-		exit();
+		$user = $this->productTable->getRow($userInfo['emp_id']);
+		$userId = $user->id;
 
-	}
+		$this->productTable->addPurchase($productId,$userId);
 
-
-	
-    public function registerAction()
-    {
-
+        return new JsonModel(array(
+			 "data" => "Added"
+		));
 	}
 
 	public function replaceList($todo)

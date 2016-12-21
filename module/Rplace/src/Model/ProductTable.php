@@ -9,11 +9,13 @@ class ProductTable
 {
     protected $productTableGateway;
 	protected $userBuyTableGateway;
+	protected $userTableGateway;
 
-    public function __construct($productTableGateway,$userBuyTableGateway)
+    public function __construct($userTableGateway,$productTableGateway,$userBuyTableGateway)
     {
         $this->productTableGateway = $productTableGateway;
 		$this->userBuyTableGateway = $userBuyTableGateway;
+		$this->userTableGateway = $userTableGateway;
     }
     
     public function getRow($empId)
@@ -37,30 +39,16 @@ class ProductTable
 		else
 			return $row;        
 	}
-    
-    public function register($name,$email,$phone,$password)
-    {
-        $bcrypt = new Bcrypt();
-        $cpwd = password_hash($password, PASSWORD_BCRYPT);
-        $data = [
-           'password' => $cpwd,
-           'email'  => $email,
-		   'name'   =>$name,
-		   'phone' => $phone,
-        ];
-        
-       $this->userTableGateway->insert($data);
-    }
 
-	public function getRowByEmail($email)
+	public function addPurchase($pid,$uid)
 	{
-        $rowset = $this->userTableGateway->select(array('email' => $email));
-        $row = $rowset->current();
-		if(!$row) {
-			return null;
-		}
-		else
-			return $row;        
+        $data = [
+            'product_id' => $pid,
+			'user_id' => $uid
+        ];
 
+        $this->userBuyTableGateway->insert($data);
+		return;
 	}
+  
 }

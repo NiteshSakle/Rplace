@@ -22,11 +22,11 @@ class Module implements ConfigProviderInterface
             'factories' => [
 
 				Model\LoginTable::class => function($container) {
-					$tableGateway = $container->get(Model\LoginTableGateway::class);
+					$tableGateway = $container->get(Model\userTableGateway::class);
 					$table = new LoginTable($tableGateway);
 					return $table;
 				},
-				Model\LoginTableGateway::class => function ($container) {
+				Model\userTableGateway::class => function ($container) {
 					$dbAdapter = $container->get(AdapterInterface::class);
 					$resultSetPrototype = new ResultSet();
 					return new TableGateway('user', $dbAdapter, null, $resultSetPrototype);
@@ -35,7 +35,8 @@ class Module implements ConfigProviderInterface
 				Model\ProductTable::class => function($container) {
 					$productTableGateway = $container->get(Model\ProductTableGateway::class);
 					$userBuyTableGateway = $container->get(Model\userBuyTableGateway::class);
-					$table = new ProductTable($productTableGateway,$userBuyTableGateway);
+					$tableGateway = $container->get(Model\userTableGateway::class);
+					$table = new ProductTable($tableGateway,$productTableGateway,$userBuyTableGateway);
 					return $table;
 				},
 				Model\ProductTableGateway::class => function ($container) {
@@ -48,6 +49,7 @@ class Module implements ConfigProviderInterface
 					$resultSetPrototype = new ResultSet();
 					return new TableGateway('user_buy', $dbAdapter, null, $resultSetPrototype);
 				},
+
 
 			],
 		];
