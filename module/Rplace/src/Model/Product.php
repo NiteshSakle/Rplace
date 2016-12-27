@@ -2,13 +2,8 @@
 namespace Rplace\Model;
 
 use DomainException;
-use Zend\Filter\StringTrim;
-use Zend\Filter\StripTags;
-use Zend\Filter\ToInt;
-use Zend\InputFilter\InputFilter;
 use Zend\InputFilter\InputFilterAwareInterface;
 use Zend\InputFilter\InputFilterInterface;
-use Zend\Validator\StringLength;
 
 class Product implements InputFilterAwareInterface
 {

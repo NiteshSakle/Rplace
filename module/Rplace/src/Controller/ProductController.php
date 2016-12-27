@@ -3,94 +3,91 @@
 namespace Rplace\Controller;
 
 use Zend\Mvc\Controller\AbstractRestfulController;
-use Zend\Mvc\Controller\AbstractActionController;
-use Rplace\Model\LoginTable;
 use Rplace\Model\ProductTable;
 use Zend\View\Model\JsonModel;
-use Zend\Crypt\Password\Bcrypt;
 
 class ProductController extends AbstractRestfulController
 {
-	private $productTable;
 
-	public function __construct(ProductTable $productTable)
-	{
-		$this->productTable = $productTable;
-	}
+    private $productTable;
 
-	public function generateBillAction()							//Bill_Amount
-   	{	
-		$debt = 0;
-		$deposit = 0;
-		$data = array(); 
-		$empId = $this->params()->fromPost('id',0);
-		$user = $this->productTable->getRow($empId);
-		$userId = $user->id;
+    public function __construct(ProductTable $productTable)
+    {
+        $this->productTable = $productTable;
+    }
 
-		$results = $this->productTable->getAmount($userId);
-		$deposits = $this->productTable->getDeposit($userId);
-		$lastThreePurchases = $this->productTable->getLastPurchases($userId);
+    public function generateBillAction()       //Bill_Amount
+    {
+        $debt = 0;
+        $deposit = 0;
+        $data = array();
+        $empId = $this->params()->fromPost('id', 0);
+        $user = $this->productTable->getRow($empId);
+        $userId = $user->id;
 
-		foreach($lastThreePurchases as $item) {
-			$data[] = $item;
-		}
-		foreach($deposits as $depo) {
-			$deposit += $depo->amount;
-		}
-		foreach($results as $item) {
-			$debt += $item->price; 
-		}
+        $results = $this->productTable->getAmount($userId);
+        $deposits = $this->productTable->getDeposit($userId);
+        $lastThreePurchases = $this->productTable->getLastPurchases($userId);
 
-		return new JsonModel(array(
-			 "Result" => $debt-$deposit,
-			 "data" => $data
-		));
-	}
-
-	public function create($purchaseInfo)										//Adding UserPurchase
-	{
-		$product = $this->productTable->getProductId($purchaseInfo['barcode']);
-
-		$productId = $product->id;
-
-		$user = $this->productTable->getRow($purchaseInfo['emp_id']);
-		$userId = $user->id;
-
-		$this->productTable->addPurchase($productId,$userId);
+        foreach ($lastThreePurchases as $item) {
+            $data[] = $item;
+        }
+        foreach ($deposits as $depo) {
+            $deposit += $depo->amount;
+        }
+        foreach ($results as $item) {
+            $debt += $item->price;
+        }
 
         return new JsonModel(array(
-			 "name" => $product->name,
-			 "price" => $product->price
-		));
-	}
+            "Result" => $debt - $deposit,
+            "data" => $data
+        ));
+    }
 
-	public function depositAction()
-	{
-		$empId = $this->params()->fromPost('id',0);
-		$amount = $this->params()->fromPost('amount',0);
+    public function create($purchaseInfo)          //Adding UserPurchase
+    {
+        $product = $this->productTable->getProductId($purchaseInfo['barcode']);
 
-		$user = $this->productTable->getRow($empId);
-		$userId = $user->id;
+        $productId = $product->id;
 
-		$this->productTable->deposit($userId,$amount);
+        $user = $this->productTable->getRow($purchaseInfo['emp_id']);
+        $userId = $user->id;
 
-		return new JsonModel(array(
-			"data" =>"Deposited"
-		));
-	}
+        $this->productTable->addPurchase($productId, $userId);
 
-	public function addProductAction()
-	{
-		$barcode = $this->params()->fromPost('barcode',0);
-		$name = $this->params()->fromPost('name',0);
-		$price = $this->params()->fromPost('price',0);
+        return new JsonModel(array(
+            "name" => $product->name,
+            "price" => $product->price
+        ));
+    }
 
-		$this->productTable->addProduct($barcode,$name,$price);
+    public function depositAction()
+    {
+        $empId = $this->params()->fromPost('id', 0);
+        $amount = $this->params()->fromPost('amount', 0);
 
-		return new JsonModel(array(
-			"data" =>"Added"
-		));
-	}
+        $user = $this->productTable->getRow($empId);
+        $userId = $user->id;
 
+        $this->productTable->deposit($userId, $amount);
+
+        return new JsonModel(array(
+            "data" => "Deposited"
+        ));
+    }
+
+    public function addProductAction()
+    {
+        $barcode = $this->params()->fromPost('barcode', 0);
+        $name = $this->params()->fromPost('name', 0);
+        $price = $this->params()->fromPost('price', 0);
+
+        $this->productTable->addProduct($barcode, $name, $price);
+
+        return new JsonModel(array(
+            "data" => "Added"
+        ));
+    }
 
 }
