@@ -75,7 +75,6 @@ class Module implements ConfigProviderInterface
 					$Product = $container->get(Model\ProductTable::class);
 					return new Controller\ProductController($Product);
 				}
-
 		   ],
         ];
     }
