@@ -3,6 +3,7 @@
 namespace Rplace\Model;
 
 use Zend\Db\Sql\Select;
+use Zend\Db\Sql\Expression;
 
 class ProductTable
 {
@@ -55,12 +56,16 @@ class ProductTable
     {
         $select = new Select();
         $select->from(array('p' => $this->productTableGateway->getTable()))
-                ->join(array('ub' => $this->userBuyTableGateway->getTable()), 'ub.product_id= p.id')
+                ->join(array('ub' => $this->userBuyTableGateway->getTable()), 'ub.product_id= p.id', array('sum' => new Expression('SUM(ub.price)')))
                 ->where(array('ub.user_id' => $empId));
 
         $resultSet = $this->productTableGateway->selectWith($select);
+		
+        foreach ($resultSet as $item) {
+            $debt = $item->sum;
+        }
 
-        return $resultSet;
+		return $debt;
     }
 
     public function getLastPurchases($empId)
@@ -81,12 +86,16 @@ class ProductTable
     {
         $select = new Select();
         $select->from(array('p' => $this->userTableGateway->getTable()))
-                ->join(array('ub' => $this->userDepositTableGateway->getTable()), 'ub.user_id= p.id')
+                ->join(array('ub' => $this->userDepositTableGateway->getTable()), 'ub.user_id= p.id', array('sum' => new Expression('SUM(ub.amount)')))
                 ->where(array('ub.user_id' => $empId));
 
         $resultSet = $this->userTableGateway->selectWith($select);
 
-        return $resultSet;
+		foreach ($resultSet as $depo) {
+            $deposit = $depo->sum;
+        }
+		
+        return $deposit;
     }
 
     public function deposit($empId, $amount)   //User Deposit Money

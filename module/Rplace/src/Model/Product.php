@@ -13,6 +13,7 @@ class Product implements InputFilterAwareInterface
     public $user_id;
     public $product_id;
     private $inputFilter;
+	public $sum;
 
 	public function exchangeArray(array $data)
     {
@@ -20,7 +21,8 @@ class Product implements InputFilterAwareInterface
         $this->price  = !empty($data['price']) ? $data['price'] : "";
         $this->barcode  = !empty($data['barcode']) ? $data['barcode'] : null;
         $this->product_id  = !empty($data['product_id']) ? $data['product_id'] : null;
-        $this->user_id = !empty($data['user_id']) ? $data['user_id'] : null;      
+        $this->user_id = !empty($data['user_id']) ? $data['user_id'] : null;     
+		$this->sum	   = !empty($data['sum']) ? $data['sum'] : "555";
     }
 
     public function setInputFilter(InputFilterInterface $inputFilter)

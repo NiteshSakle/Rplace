@@ -18,25 +18,17 @@ class ProductController extends AbstractRestfulController
 
     public function generateBillAction()       //Bill_Amount
     {
-        $debt = 0;
-        $deposit = 0;
         $data = array();
         $empId = $this->params()->fromPost('id', 0);
         $user = $this->productTable->getRow($empId);
         $userId = $user->id;
 
-        $results = $this->productTable->getAmount($userId);
-        $deposits = $this->productTable->getDeposit($userId);
+        $debt = $this->productTable->getAmount($userId);
+        $deposit = $this->productTable->getDeposit($userId);
         $lastThreePurchases = $this->productTable->getLastPurchases($userId);
 
         foreach ($lastThreePurchases as $item) {
             $data[] = $item;
-        }
-        foreach ($deposits as $depo) {
-            $deposit += $depo->amount;
-        }
-        foreach ($results as $item) {
-            $debt += $item->price;
         }
 
         return new JsonModel(array(
@@ -89,5 +81,4 @@ class ProductController extends AbstractRestfulController
             "data" => "Added"
         ));
     }
-
 }
