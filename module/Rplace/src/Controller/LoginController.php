@@ -20,21 +20,23 @@ class LoginController extends AbstractRestfulController
     public function create($userInfo)          //Login
     {
         $row = $this->loginTable->getRow($userInfo['emp_id']);
+  
         if (!$row) {
             return new JsonModel(array(
-                "data" => "No User"
+                "is_valid_user" => 404
             ));
         }
 
         $bcrypt = new Bcrypt();
         if (password_verify($userInfo['pin'], $row->pin)) {
             return new JsonModel(array(
-                "data" => "Success",
-                "name" => $row->name
+                "is_valid_user" => 200,
+                "emp_name" => $row->name,
+                "is_authorised" => $row->authorised
             ));
         }
         return new JsonModel(array(
-            "data" => "Failed"
+            "is_valid_user" => 401
         ));
     }
 
@@ -43,7 +45,7 @@ class LoginController extends AbstractRestfulController
         $this->loginTable->updateUserInfo($updateInfo);
 
         return new JsonModel(array(
-            "data" => "Updated"
+            "is_updated" => "200"
         ));
     }
 

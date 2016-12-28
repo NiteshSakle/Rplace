@@ -2,8 +2,8 @@
 
 namespace Rplace\Model;
 
-use Zend\Db\Sql\Select;
 use Zend\Db\Sql\Expression;
+use Zend\Db\Sql\Select;
 
 class ProductTable
 {
@@ -27,8 +27,9 @@ class ProductTable
         $row = $rowset->current();
         if (!$row) {
             return null;
-        } else
+        } else {
             return $row;
+        }
     }
 
     public function getProductId($code)
@@ -37,8 +38,9 @@ class ProductTable
         $row = $rowset->current();
         if (!$row) {
             return null;
-        } else
+        } else {
             return $row;
+        }
     }
 
     public function addPurchase($pid, $uid)    //Adding User  Transacation
@@ -48,7 +50,7 @@ class ProductTable
             'user_id' => $uid
         ];
 
-        $this->userBuyTableGateway->insert($data);
+        $a = $this->userBuyTableGateway->insert($data);
         return;
     }
 
@@ -60,12 +62,12 @@ class ProductTable
                 ->where(array('ub.user_id' => $empId));
 
         $resultSet = $this->productTableGateway->selectWith($select);
-		
+
         foreach ($resultSet as $item) {
             $debt = $item->sum;
         }
 
-		return $debt;
+        return $debt;
     }
 
     public function getLastPurchases($empId)
@@ -91,10 +93,10 @@ class ProductTable
 
         $resultSet = $this->userTableGateway->selectWith($select);
 
-		foreach ($resultSet as $depo) {
+        foreach ($resultSet as $depo) {
             $deposit = $depo->sum;
         }
-		
+
         return $deposit;
     }
 
@@ -106,6 +108,7 @@ class ProductTable
         ];
 
         $this->userDepositTableGateway->insert($data);
+
         return;
     }
 
@@ -118,6 +121,7 @@ class ProductTable
         ];
 
         $this->productTableGateway->insert($data);
+
         return;
     }
 

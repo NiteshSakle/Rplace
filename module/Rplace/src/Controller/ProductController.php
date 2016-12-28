@@ -33,7 +33,7 @@ class ProductController extends AbstractRestfulController
 
         return new JsonModel(array(
             "Result" => $debt - $deposit,
-            "data" => $data
+            "last_transactions" => $data
         ));
     }
 
@@ -47,10 +47,10 @@ class ProductController extends AbstractRestfulController
         $userId = $user->id;
 
         $this->productTable->addPurchase($productId, $userId);
-
+        
         return new JsonModel(array(
-            "name" => $product->name,
-            "price" => $product->price
+            "product_name" => $product->name,
+            "product_price" => $product->price
         ));
     }
 
@@ -65,7 +65,7 @@ class ProductController extends AbstractRestfulController
         $this->productTable->deposit($userId, $amount);
 
         return new JsonModel(array(
-            "data" => "Deposited"
+            "is_deposited" => "200"
         ));
     }
 
@@ -75,10 +75,28 @@ class ProductController extends AbstractRestfulController
         $name = $this->params()->fromPost('name', 0);
         $price = $this->params()->fromPost('price', 0);
 
+        $description = $this->productTable->getProductId($barcode);
+        if($description) {
+            return new JsonModel(array(
+                "is_added" => "403"
+            ));
+        }
+            
         $this->productTable->addProduct($barcode, $name, $price);
 
         return new JsonModel(array(
-            "data" => "Added"
+            "is_added" => "200"
+        ));
+    }
+    
+    public function verifyProductAction()
+    {
+        $barcode = $this->params()->fromRoute('id',0);
+        $description = $this->productTable->getProductId($barcode);
+        
+        return new JsonModel(array(
+            "product_name" => $description->name,
+            "product_price" => $description->price
         ));
     }
 }

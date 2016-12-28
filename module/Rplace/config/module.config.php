@@ -24,7 +24,7 @@ return [
                 'options' => [
                     'route' => '/product[/:action][/:id]',
                     'constraints' => [
-                        'action' => 'generateBill|deposit|addProduct',
+                        'action' => 'generateBill|deposit|addProduct|verifyProduct',
                         'id' => '[0-9a-zA-Z]*'
                     ],
                     'defaults' => [
