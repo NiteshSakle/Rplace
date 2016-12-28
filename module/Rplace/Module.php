@@ -65,7 +65,8 @@ class Module implements ConfigProviderInterface
             'factories' => [
                 Controller\LoginController::class => function($container) {
             $loginTable = $container->get(Model\LoginTable::class);
-            return new Controller\LoginController($loginTable);
+            $Product = $container->get(Model\ProductTable::class);
+            return new Controller\LoginController($loginTable,$Product);
         },
                 Controller\ProductController::class => function($container) {
             $Product = $container->get(Model\ProductTable::class);

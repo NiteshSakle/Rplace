@@ -12,7 +12,7 @@ return [
                 'options' => [
                     'route' => '/login[/:action]',
                     'constraints' => [
-                        'action' => 'register'
+                        'action' => 'register|changePassword'
                     ],
                     'defaults' => [
                         'controller' => 'Rplace\Controller\LoginController',
@@ -24,7 +24,7 @@ return [
                 'options' => [
                     'route' => '/product[/:action][/:id]',
                     'constraints' => [
-                        'action' => 'generateBill|deposit|addProduct|verifyProduct',
+                        'action' => 'generateBill|deposit|addProduct|verifyProduct|purchaseProduct',
                         'id' => '[0-9a-zA-Z]*'
                     ],
                     'defaults' => [

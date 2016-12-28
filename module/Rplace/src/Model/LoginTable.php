@@ -25,15 +25,15 @@ class LoginTable
             return $row;
     }
 
-    public function updateUserInfo($info)
+    public function updateUserInfo($emp_id,$pin)
     {
         $bcrypt = new Bcrypt();
-        $cpwd = password_hash($info['pin'], PASSWORD_BCRYPT);
+        $cpwd = password_hash($pin, PASSWORD_BCRYPT);
 
         $data = [
             'pin' => $cpwd
         ];
-        $this->userTableGateway->update($data, ['employee_id' => $info['emp_id']]);
+        $this->userTableGateway->update($data, ['employee_id' => $emp_id]);
 
         return;
     }

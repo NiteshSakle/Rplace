@@ -50,8 +50,12 @@ class ProductTable
             'user_id' => $uid
         ];
 
-        $a = $this->userBuyTableGateway->insert($data);
-        return;
+        try {
+            $this->userBuyTableGateway->insert($data);   
+        } catch (\Exception $exc) {
+            return FALSE;
+        }
+        return TRUE;
     }
 
     public function getAmount($empId)
@@ -107,9 +111,13 @@ class ProductTable
             'amount' => $amount
         ];
 
-        $this->userDepositTableGateway->insert($data);
+        try {
+             $this->userDepositTableGateway->insert($data);
+        } catch (Exception $ex) {
+                return FALSE;
+        }
 
-        return;
+        return TRUE;
     }
 
     public function addProduct($barcode, $name, $price)  //New Product Add
@@ -120,9 +128,13 @@ class ProductTable
             'barcode' => $barcode
         ];
 
-        $this->productTableGateway->insert($data);
-
-        return;
+        try {
+            $this->productTableGateway->insert($data);            
+        } catch (Exception $ex) {
+               return FALSE;
+        }
+        
+        return TRUE;
     }
 
 }

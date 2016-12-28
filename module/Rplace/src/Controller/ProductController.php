@@ -16,39 +16,28 @@ class ProductController extends AbstractRestfulController
         $this->productTable = $productTable;
     }
 
-    public function generateBillAction()       //Bill_Amount
+    public function purchaseProductAction()          //Adding UserPurchase
     {
-        $data = array();
-        $empId = $this->params()->fromPost('id', 0);
-        $user = $this->productTable->getRow($empId);
-        $userId = $user->id;
-
-        $debt = $this->productTable->getAmount($userId);
-        $deposit = $this->productTable->getDeposit($userId);
-        $lastThreePurchases = $this->productTable->getLastPurchases($userId);
-
-        foreach ($lastThreePurchases as $item) {
-            $data[] = $item;
-        }
-
-        return new JsonModel(array(
-            "Result" => $debt - $deposit,
-            "last_transactions" => $data
-        ));
-    }
-
-    public function create($purchaseInfo)          //Adding UserPurchase
-    {
-        $product = $this->productTable->getProductId($purchaseInfo['barcode']);
+        $barcode = $this->params()->fromPost('barcode');
+        $product = $this->productTable->getProductId($barcode);
 
         $productId = $product->id;
 
-        $user = $this->productTable->getRow($purchaseInfo['emp_id']);
+        $emp_id = $this->params()->fromPost('emp_id');
+        $user = $this->productTable->getRow($emp_id);
         $userId = $user->id;
 
-        $this->productTable->addPurchase($productId, $userId);
+        $resposnse = $this->productTable->addPurchase($productId, $userId);
+        if($resposnse == FALSE) {
+            return new JsonModel (array(
+                "success" => FALSE,
+                "message" => "Parameters Missing"
+            ));
+        }
         
         return new JsonModel(array(
+            "success" => TRUE,
+            "message" => "Purachase Recorded Successfully",
             "product_name" => $product->name,
             "product_price" => $product->price
         ));
@@ -56,45 +45,75 @@ class ProductController extends AbstractRestfulController
 
     public function depositAction()
     {
-        $empId = $this->params()->fromPost('id', 0);
-        $amount = $this->params()->fromPost('amount', 0);
-
+        $empId = $this->params()->fromPost('emp_id');
+        $amount = $this->params()->fromPost('price',0);
+        if($amount == 0) {
+            return new JsonModel(array(
+                "success" => FALSE,
+                "message" => "Enter Amount"
+        )); 
+        }
         $user = $this->productTable->getRow($empId);
+        if(!$user) {
+            return new JsonModel(array(
+                "success" => FALSE,
+                "message" => "No User."
+        )); 
+        }
         $userId = $user->id;
 
-        $this->productTable->deposit($userId, $amount);
-
+        $response = $this->productTable->deposit($userId, $amount);
+        if($response == FALSE) {
+            return new JsonModel (array(
+                "success" => FALSE,
+                "message" => "Parameters Missing"
+            ));
+        }
         return new JsonModel(array(
-            "is_deposited" => "200"
+                "success" => TRUE,
+                "message" => "Money Deposited."
         ));
     }
 
     public function addProductAction()
     {
-        $barcode = $this->params()->fromPost('barcode', 0);
-        $name = $this->params()->fromPost('name', 0);
-        $price = $this->params()->fromPost('price', 0);
+        $barcode = $this->params()->fromPost('barcode');
+        $name = $this->params()->fromPost('name');
+        $price = $this->params()->fromPost('price');
 
         $description = $this->productTable->getProductId($barcode);
-        if($description) {
+        if($description) {                                               //duplicate Product 
             return new JsonModel(array(
-                "is_added" => "403"
+                "success" => FALSE,
+                "message" => "Already In Record"
             ));
         }
             
-        $this->productTable->addProduct($barcode, $name, $price);
-
+        $response = $this->productTable->addProduct($barcode, $name, $price);   // failed
+        if($response == 0) {
+            return new JsonModel(array(
+                "success" => FALSE,
+        ));
+        }
         return new JsonModel(array(
-            "is_added" => "200"
+                "success" => TRUE,
+                "message" => "Added Successfully"
         ));
     }
     
     public function verifyProductAction()
     {
-        $barcode = $this->params()->fromRoute('id',0);
+        $barcode = $this->params()->fromQuery('barcode');
         $description = $this->productTable->getProductId($barcode);
-        
+        if(!$description) {
+            return new JsonModel(array(
+            "success" => FALSE,
+            "message" => "No Product With This Code"
+        ));
+        }
+            
         return new JsonModel(array(
+            "success" => TRUE,
             "product_name" => $description->name,
             "product_price" => $description->price
         ));
