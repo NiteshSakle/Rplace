@@ -25,9 +25,16 @@ class ProductController extends AbstractRestfulController
 
         $emp_id = $this->params()->fromPost('emp_id');
         $user = $this->productTable->getRow($emp_id);
+        if(!$user) {
+            return new JsonModel(array(
+                "success" => FALSE,
+                "message" => "No User."
+            )); 
+        }
+
         $userId = $user->id;
 
-        $resposnse = $this->productTable->addPurchase($productId, $userId);
+        $resposnse = $this->productTable->addPurchase($productId, $userId , $product->price);
         if($resposnse == FALSE) {
             return new JsonModel (array(
                 "success" => FALSE,
@@ -103,7 +110,7 @@ class ProductController extends AbstractRestfulController
     
     public function verifyProductAction()
     {
-        $barcode = $this->params()->fromQuery('barcode');
+        $barcode = $this->params()->fromPost('barcode');
         $description = $this->productTable->getProductId($barcode);
         if(!$description) {
             return new JsonModel(array(
@@ -117,5 +124,26 @@ class ProductController extends AbstractRestfulController
             "product_name" => $description->name,
             "product_price" => $description->price
         ));
+    }
+    
+    public function getAmountByIdAction()
+    {
+        $empId = $this->params()->fromPost('emp_id');
+        $user = $this->productTable->getRow($empId);
+        if(!$user) {
+            return new JsonModel(array(
+                "success" => FALSE,
+                "message" => "No User."
+            )); 
+        }
+        $userId = $user->id;
+        $debt = $this->productTable->getAmount($userId);
+        $deposit = $this->productTable->getDeposit($userId);
+        
+        return new JsonModel(array(
+            "success" => TRUE,
+            "amount_owed" => $debt-$deposit
+        ));
+        
     }
 }

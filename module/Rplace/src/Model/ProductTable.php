@@ -43,11 +43,12 @@ class ProductTable
         }
     }
 
-    public function addPurchase($pid, $uid)    //Adding User  Transacation
+    public function addPurchase($pid, $uid, $price)    //Adding User  Transacation
     {
         $data = [
             'product_id' => $pid,
-            'user_id' => $uid
+            'user_id' => $uid,
+            'price' => $price
         ];
 
         try {
@@ -96,11 +97,10 @@ class ProductTable
                 ->where(array('ub.user_id' => $empId));
 
         $resultSet = $this->userTableGateway->selectWith($select);
-
+         
         foreach ($resultSet as $depo) {
             $deposit = $depo->sum;
         }
-
         return $deposit;
     }
 
