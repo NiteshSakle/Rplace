@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Local Configuration Override
  *
@@ -11,5 +12,13 @@
  * credentials from accidentally being committed into version control.
  */
 
-return [
-];
+/* if running Dcokerfile the password of mysql is 'password' => 'root_rplace'  
+ *      change in set-mysql-password.sh if required
+ * 
+ */
+return array(
+    'db' => array(
+        'username' => 'root',
+        'password' => '123'
+    )
+);
