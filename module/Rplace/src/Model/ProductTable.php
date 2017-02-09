@@ -48,7 +48,8 @@ class ProductTable
         $data = [
             'product_id' => $pid,
             'user_id' => $uid,
-            'price' => $price
+            'price' => $price,
+	    'is_deposit' => 0
         ];
 
         try {
@@ -64,7 +65,7 @@ class ProductTable
         $select = new Select();
         $select->from(array('p' => $this->productTableGateway->getTable()))
                 ->join(array('ub' => $this->userBuyTableGateway->getTable()), 'ub.product_id= p.id', array('sum' => new Expression('SUM(ub.price)')))
-                ->where(array('ub.user_id' => $empId));
+                ->where(array('ub.user_id' => $empId, 'is_deposit'=>0));
 
         $resultSet = $this->productTableGateway->selectWith($select);
 
@@ -79,7 +80,7 @@ class ProductTable
     {
         $select = new Select();
         $select->from(array('p' => $this->productTableGateway->getTable()))
-                ->join(array('ub' => $this->userBuyTableGateway->getTable()), 'ub.product_id= p.id')
+                ->join(array('ub' => $this->userBuyTableGateway->getTable()), 'ub.product_id = p.id')
                 ->where(array('ub.user_id' => $empId))
                 ->order('ub.id DESC')
                 ->limit(3);
@@ -93,8 +94,8 @@ class ProductTable
     {
         $select = new Select();
         $select->from(array('p' => $this->userTableGateway->getTable()))
-                ->join(array('ub' => $this->userDepositTableGateway->getTable()), 'ub.user_id= p.id', array('sum' => new Expression('SUM(ub.amount)')))
-                ->where(array('ub.user_id' => $empId));
+                ->join(array('ub' => $this->userBuyTableGateway->getTable()), 'ub.user_id= p.id', array('sum' => new Expression('SUM(ub.price)')))
+                ->where(array('ub.user_id' => $empId, 'is_deposit' => 1));
 
         $resultSet = $this->userTableGateway->selectWith($select);
          
@@ -108,11 +109,13 @@ class ProductTable
     {
         $data = [
             'user_id' => $empId,
-            'amount' => $amount
+            'price' => $amount,
+	    'product_id' => 999,
+	    'is_deposit' =>1
         ];
 
         try {
-             $this->userDepositTableGateway->insert($data);
+             $this->userBuyTableGateway->insert($data);
         } catch (Exception $ex) {
                 return FALSE;
         }
