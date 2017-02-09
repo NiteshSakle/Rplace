@@ -38,11 +38,13 @@ RUN sed -i -e"s/^bind-address\s*=\s*127.0.0.1/bind-address = 0.0.0.0/" /etc/mysq
 ADD set-mysql-password.sh /tmp/set-mysql-password.sh
 RUN /bin/sh /tmp/set-mysql-password.sh
 
-# insatlling composer 
+# installing composer 
 RUN mkdir /var/www/html/Rplace 
+RUN chown -R www-data:www-data /var/www/html/Rplace
 COPY / /var/www/html/Rplace
-RUN	curl -sS https://getcomposer.org/installer \
-    | php -- --install-dir=/usr/local/bin --filename=composer
+
+#RUN	curl -sS https://getcomposer.org/installer \
+#    | php -- --install-dir=/usr/local/bin --filename=composer
 
 RUN chmod -R 777 /var/www/html/Rplace/data/cache
 # to unzip the pacakages dowloaded from git an install git 
@@ -50,7 +52,7 @@ RUN apt-get install zip unzip
 RUN apt-get -y install git
 
 WORKDIR /var/www/html/Rplace
-RUN php composer.phar install
+RUN php composer.phar install 
 
 COPY config/autoload/local.php.dist config/autoload/local.php
 
