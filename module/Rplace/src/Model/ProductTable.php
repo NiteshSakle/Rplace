@@ -82,8 +82,8 @@ class ProductTable
         $select->from(array('p' => $this->productTableGateway->getTable()))
                 ->join(array('ub' => $this->userBuyTableGateway->getTable()), 'ub.product_id = p.id')
                 ->where(array('ub.user_id' => $empId))
-                ->order('ub.id DESC')
-                ->limit(3);
+                ->order('ub.id DESC');
+            //    ->limit(3);
 
         $resultSet = $this->productTableGateway->selectWith($select);
 
