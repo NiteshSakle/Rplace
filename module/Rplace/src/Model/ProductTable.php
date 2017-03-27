@@ -139,5 +139,30 @@ class ProductTable
         
         return TRUE;
     }
+    
+    public function getTableData($tableName)
+    {
+        $select = new Select();
+        $select->from(array('t' => $tableName));
+
+        switch ($tableName) {
+            case 'user':
+                $resultSet = $this->userTableGateway->selectWith($select);
+                break;
+            case 'user_buy':
+                $resultSet = $this->userBuyTableGateway->selectWith($select);
+                break;
+            case 'product':
+                $resultSet = $this->productTableGateway->selectWith($select);
+                break;
+        }
+        $resultArray = [];
+        
+        foreach ($resultSet as $result) {
+            $resultArray[] = (array) $result;
+        }
+        
+        return $resultArray;
+    }
 
 }

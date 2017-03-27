@@ -3,6 +3,7 @@
 namespace Rplace;
 
 use Zend\Router\Http\Segment;
+use Zend\Router\Http\Literal;
 
 return [
     'router' => [
@@ -32,6 +33,16 @@ return [
                     ],
                 ],
             ],
+            'backup' => [
+                'type' => Literal::class,
+                'options' => [
+                    'route' => '/backup',
+                    'defaults' => [
+                        'controller' => 'Rplace\Controller\LoginController',
+                        'action' => 'backup',
+                    ],
+                ],
+            ],            
         ],
     ],
     'view_manager' => [
